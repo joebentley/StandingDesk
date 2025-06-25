@@ -26,8 +26,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         )
         if let button = statusItem.button {
             button.image = NSImage(
-                systemSymbolName: "1.circle",
-                accessibilityDescription: "1"
+                systemSymbolName: "alarm.fill",
+                accessibilityDescription: "alarm"
             )
         }
 
