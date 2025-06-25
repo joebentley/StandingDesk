@@ -8,14 +8,30 @@
 // Status bar app created using this tutorial https://sarunw.com/posts/how-to-make-macos-menu-bar-app/
 
 import Cocoa
+import UserNotifications
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
+    private var notificationCenter: UNUserNotificationCenter!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "1.circle", accessibilityDescription: "1")
+        }
+        
+        notificationCenter = UNUserNotificationCenter.current()
+        Task {
+            do {
+                let granted = try await notificationCenter.requestAuthorization(options: [.alert, .badge])
+                if !granted {
+                    let alert = NSAlert()
+                    alert.messageText = "This app needs notifications to be useful!"
+                }
+            } catch {
+                let alert = NSAlert(error: error)
+                alert.runModal()
+            }
         }
         
         setupMenus()
@@ -31,8 +47,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func didTapTest() {
-        let alert = NSAlert()
-        alert.messageText = "You clicked test!"
-        alert.runModal()
+        let content = UNMutableNotificationContent()
+        content.title = "Stand reminder!"
+        content.body = "Don't forget to stand!"
+        let notification = UNNotificationRequest(identifier: "com.joebentley.standnotification", content: content, trigger: nil)
+        notificationCenter.add(notification)
     }
 }
