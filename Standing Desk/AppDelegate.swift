@@ -15,42 +15,63 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var notificationCenter: UNUserNotificationCenter!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem = NSStatusBar.system.statusItem(
+            withLength: NSStatusItem.variableLength
+        )
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "1.circle", accessibilityDescription: "1")
+            button.image = NSImage(
+                systemSymbolName: "1.circle",
+                accessibilityDescription: "1"
+            )
         }
-        
+
         notificationCenter = UNUserNotificationCenter.current()
         Task {
             do {
-                let granted = try await notificationCenter.requestAuthorization(options: [.alert, .badge])
+                let granted = try await notificationCenter.requestAuthorization(
+                    options: [.alert, .badge])
                 if !granted {
                     let alert = NSAlert()
-                    alert.messageText = "This app needs notifications to be useful!"
+                    alert.messageText =
+                        "This app needs notifications to be useful!"
                 }
             } catch {
                 let alert = NSAlert(error: error)
                 alert.runModal()
             }
         }
-        
+
         setupMenus()
     }
-    
+
     func setupMenus() {
         let menu = NSMenu()
-        let test = NSMenuItem(title: "Test", action: #selector(didTapTest), keyEquivalent: "t")
+        let test = NSMenuItem(
+            title: "Test",
+            action: #selector(didTapTest),
+            keyEquivalent: "t"
+        )
         menu.addItem(test)
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.addItem(
+            NSMenuItem(
+                title: "Quit",
+                action: #selector(NSApplication.terminate(_:)),
+                keyEquivalent: "q"
+            )
+        )
         statusItem.menu = menu
     }
-    
+
     @objc func didTapTest() {
         let content = UNMutableNotificationContent()
         content.title = "Stand reminder!"
         content.body = "Don't forget to stand!"
-        let notification = UNNotificationRequest(identifier: "com.joebentley.standnotification", content: content, trigger: nil)
+        let notification = UNNotificationRequest(
+            identifier: "com.joebentley.standnotification",
+            content: content,
+            trigger: nil
+        )
         notificationCenter.add(notification)
     }
 }
