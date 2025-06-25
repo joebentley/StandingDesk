@@ -5,26 +5,34 @@
 //  Created by Joe Bentley on 25.06.25.
 //
 
+// Status bar app created using this tutorial https://sarunw.com/posts/how-to-make-macos-menu-bar-app/
+
 import Cocoa
 
-@main
 class AppDelegate: NSObject, NSApplicationDelegate {
+    private var statusItem: NSStatusItem!
 
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        if let button = statusItem.button {
+            button.image = NSImage(systemSymbolName: "1.circle", accessibilityDescription: "1")
+        }
+        
+        setupMenus()
+    }
     
-
-
-    func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
+    func setupMenus() {
+        let menu = NSMenu()
+        let test = NSMenuItem(title: "Test", action: #selector(didTapTest), keyEquivalent: "t")
+        menu.addItem(test)
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        statusItem.menu = menu
     }
-
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+    
+    @objc func didTapTest() {
+        let alert = NSAlert()
+        alert.messageText = "You clicked test!"
+        alert.runModal()
     }
-
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
-        return true
-    }
-
-
 }
-
